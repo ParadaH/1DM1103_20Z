@@ -9,5 +9,5 @@ int main(int argc, char *argv[])
         a1 = atof("4");
         a2 = atof("6");
         v = a1 + a2;
-        printf("[%s] Suma: %f\n", argv[0], atof(argv[1]) + atof(argv[2]));
+        printf("[%s] Suma: %f\n", argv[0], v);
     }
