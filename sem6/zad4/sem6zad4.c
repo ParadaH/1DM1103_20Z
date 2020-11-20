@@ -64,7 +64,7 @@ int wczytaj(student dane[100], char *fnazwa)
     }
 
     fclose(fin);
-    return cnt;
+    return cnt; //zwraca ilosc 
 }
 
 //szukaj i szukaj_przedmiotow - czytanie przedmiotow z listy i zwrocenie realnej ich liczby
