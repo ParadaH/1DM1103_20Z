@@ -19,7 +19,7 @@ typedef struct _Przedmiot{
     char *nazwa_przedmiotu;
     char *semestr;
 
-    struct _Przedmiotu *nast;
+    struct _Przedmiot *nast;
 } Przedmiot;
 
 typedef struct _Ocena{
@@ -36,7 +36,7 @@ typedef struct _Sbaza{
 } Sbaza;
 
 Sbaza *wczytaj_baze(char *nazwa_pliku);
-Sbaza *zapisz_baze(char *nazwa_pliku, Sbaza *baza);
+void zapisz_baze(char *nazwa_pliku, Sbaza *baza);
 
 Student *wczytaj_studentow(FILE *fin);
 Ocena *wczytaj_oceny(FILE *fin);
@@ -47,7 +47,7 @@ int ile_przedmiotow(Sbaza *baza);
 int ile_ocen(Sbaza *baza);
 
 Sbaza *dodaj_studentow(Sbaza *baza, char *imie, char *nazwisko, char *nr_albumu, char *email);
-void dodaj_przedmiot(Sbaza *baza, char *kod_przedmiotu, char *nazwa_przedmiotu, char *semestr);
+Sbaza *dodaj_przedmiot(Sbaza *baza, char *kod_przedmiotu, char *nazwa_przedmiotu, char *semestr);
 Sbaza *dodaj_studenta_do_przedmiotu(Sbaza *baza, char *kod_przedmiotu, char *nr_albumu);
 
 void listuj_studentow(Sbaza *baza);

@@ -8,16 +8,14 @@ Sbaza *wczytaj_baze(char *nazwa_pliku)
         printf("BŁĄD! Nie moge otworzyć pliku: %s.\n", nazwa_pliku);
         exit(-1);
     }
-
     Sbaza *baza = (Sbaza*) malloc(sizeof(Sbaza));
     baza->lista_studentow = wczytaj_studentow(fin);
     baza->lista_przedmiotow = wczytaj_przedmioty(fin);
     baza->lista_ocen = wczytaj_oceny(fin);
-    
+
     fclose(fin);
     return baza;
 }
-
 
 Student *wczytaj_studentow(FILE *fin)
 {
@@ -26,9 +24,9 @@ Student *wczytaj_studentow(FILE *fin)
     char *s;
     Student *glowa = NULL;
     Student *last_student = NULL;
+
     fgets(bufor, 254, fin);
     sscanf(bufor, "%d", &n);
-
     for(int i = 0; i < n; i++)
     {
         Student *student = (Student*) malloc(sizeof(Student));
@@ -50,17 +48,18 @@ Student *wczytaj_studentow(FILE *fin)
         strcpy(student->imie, s);
 
         s = strtok(NULL, ";");
-        student->imie = (char*) malloc(sizeof(char) * (strlen(s) + 1));
+        student->nazwisko = (char*) malloc(sizeof(char) * (strlen(s) + 1));
         strcpy(student->nazwisko, s);
 
         s = strtok(NULL, ";");
-        student->imie = (char*) malloc(sizeof(char) * (strlen(s) + 1));
+        student->nr_albumu = (char*) malloc(sizeof(char) * (strlen(s) + 1));
         strcpy(student->nr_albumu, s);
 
         s = strtok(NULL, "\n");
-        student->imie = (char*) malloc(sizeof(char) * (strlen(s) + 1));
+        student->email = (char*) malloc(sizeof(char) * (strlen(s) + 1));
         strcpy(student->email, s);
     }
+
     return glowa;
 }
 
@@ -71,9 +70,9 @@ Przedmiot *wczytaj_przedmioty(FILE *fin)
     char *s;
     Przedmiot *glowa = NULL;
     Przedmiot *last_subject = NULL;
+
     fgets(bufor, 254, fin);
     sscanf(bufor, "%d", &n);
-
     for(int i = 0; i < n; i++)
     {
         Przedmiot *przed = (Przedmiot*) malloc(sizeof(Przedmiot));
@@ -110,11 +109,11 @@ Ocena *wczytaj_oceny(FILE *fin)
     char bufor[255];
     int n;
     char *s;
-    Przedmiot *glowa = NULL;
-    Przedmiot *last_grade = NULL;
+    Ocena *glowa = NULL;
+    Ocena *last_grade = NULL;
+
     fgets(bufor, 254, fin);
     sscanf(bufor, "%d", &n);
-
     for(int i = 0; i < n; i++)
     {
         Ocena *grade = (Ocena*) malloc(sizeof(Ocena));
@@ -135,47 +134,44 @@ Ocena *wczytaj_oceny(FILE *fin)
         grade->kod_przedmiotu = (char*) malloc(sizeof(char) * (strlen(s) + 1));
         strcpy(grade->kod_przedmiotu, s);
 
-        s = strtok(NULL, ";");
+        s = strtok(NULL, "\n");
         grade->nr_albumu = (char*) malloc(sizeof(char) * (strlen(s) + 1));
         strcpy(grade->nr_albumu, s);
 
-        s = strtok(NULL, ";");
     }
     return glowa;
 }
 
-Sbaza *zapisz_baze(char *nazwa_pliku, Sbaza *baza)
+void zapisz_baze(char *nazwa_pliku, Sbaza *baza)
 {
     FILE *fout;
     fout = fopen(nazwa_pliku, "w+");
-
-    fprintf(fout, "%d\n", ile_studentow(baza));
 
     Student *student = baza->lista_studentow;
     Przedmiot *przedmiot = baza->lista_przedmiotow;
     Ocena *ocena = baza->lista_ocen;
 
+    fprintf(fout, "%d\n", ile_studentow(baza));
     for(int i = 0; i < ile_studentow(baza); i++)
     {
-        fprintf(fout, "%s; %s; %s; %s\n", student->imie, student->nazwisko, student->nr_albumu, student->email);
+        fprintf(fout, "%s;%s;%s;%s\n", student->imie, student->nazwisko, student->nr_albumu, student->email);
         student = student->nast;
     }
-    fprintf(fout, "%d\n", ile_przedmiotow(baza));
 
+    fprintf(fout, "%d\n", ile_przedmiotow(baza));
     for(int j = 0; j < ile_przedmiotow(baza); j++)
     {
-        fprintf(fout, "%s; %s; %s\n", przedmiot->kod_przedmiotu, przedmiot->nazwa_przedmiotu, przedmiot->semestr);
+        fprintf(fout, "%s;%s;%s\n", przedmiot->kod_przedmiotu, przedmiot->nazwa_przedmiotu, przedmiot->semestr);
         przedmiot = przedmiot->nast;
     }
-    fprintf(fout, "%d\n", ile_ocen(baza));
 
+    fprintf(fout, "%d\n", ile_ocen(baza));
     for(int k = 0; k < ile_ocen(baza); k++)
     {
-        fprintf(fout, "%s; %s\n", ocena->kod_przedmiotu, ocena->nr_albumu);
+        fprintf(fout, "%s;%s\n", ocena->kod_przedmiotu, ocena->nr_albumu);
         ocena = ocena->nast;
     }
     fclose(fout);
-    return NULL;
 }
 
 Sbaza *dodaj_studentow(Sbaza *baza, char *imie, char *nazwisko, char *nr_albumu, char *email)
@@ -185,7 +181,6 @@ Sbaza *dodaj_studentow(Sbaza *baza, char *imie, char *nazwisko, char *nr_albumu,
   	nowy->nast = NULL;
 
   	nowy->imie = (char*) malloc(sizeof(char) * (strlen(imie) + 1));
-
     strcpy(nowy->imie, imie);
     nowy->nazwisko = (char*) malloc(sizeof(char) * (strlen(nazwisko) + 1));
     strcpy(nowy->nazwisko, nazwisko);
@@ -211,17 +206,18 @@ Sbaza *dodaj_studentow(Sbaza *baza, char *imie, char *nazwisko, char *nr_albumu,
     return NULL;
 }
 
-void dodaj_przedmiot(Sbaza *baza, char *kod_przedmiotu, char *nazwa_przedmiotu, char *semestr)
+Sbaza *dodaj_przedmiot(Sbaza *baza, char *kod_przedmiotu, char *nazwa_przedmiotu, char *semestr)
 {
  	Przedmiot *nowy = (Przedmiot*) malloc(sizeof(Przedmiot));
   	Przedmiot *teraz = NULL;
   	nowy->nast = NULL;
     
   	nowy->kod_przedmiotu = (char*) malloc(sizeof(char) * (strlen(kod_przedmiotu) + 1));
-
     strcpy(nowy->kod_przedmiotu, kod_przedmiotu);
+
     nowy->nazwa_przedmiotu = (char*) malloc(sizeof(char) * (strlen(nazwa_przedmiotu) + 1));
     strcpy(nowy->nazwa_przedmiotu, nazwa_przedmiotu);
+
     nowy->semestr = (char*) malloc(sizeof(char) * (strlen(semestr) + 1));
     strcpy(nowy->semestr, semestr);
 
@@ -239,6 +235,7 @@ void dodaj_przedmiot(Sbaza *baza, char *kod_przedmiotu, char *nazwa_przedmiotu, 
         }
         teraz->nast = nowy;
     }
+    return NULL;
 }
     
 Sbaza *dodaj_studenta_do_przedmiotu(Sbaza *baza, char *kod_przedmiotu, char *nr_albumu)
@@ -248,8 +245,8 @@ Sbaza *dodaj_studenta_do_przedmiotu(Sbaza *baza, char *kod_przedmiotu, char *nr_
 	nowy->nast = NULL;
 
   	nowy->kod_przedmiotu = (char*) malloc(sizeof(char) * (strlen(kod_przedmiotu) + 1));
-
     strcpy(nowy->kod_przedmiotu, kod_przedmiotu);
+    
     nowy->nr_albumu = (char*) malloc(sizeof(char) * (strlen(nr_albumu) + 1));
     strcpy(nowy->nr_albumu, nr_albumu);
 
@@ -316,6 +313,8 @@ void listuj_studentow(Sbaza *baza)
         student = student->nast;
     }
 }
+
+
 
 void zwolnij_student(Student *s) 
 {

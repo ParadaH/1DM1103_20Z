@@ -7,6 +7,7 @@ int main(int argc, char **argv)
 {
     Sbaza *baza;
     baza = wczytaj_baze(argv[1]);
+    // listuj_studentow(baza);
 
     if(strcmp("listofstudents", argv[2]) == 0)
     {
@@ -26,13 +27,18 @@ int main(int argc, char **argv)
     }
     if(strcmp("countstudents", argv[2]) == 0)
     {
-        printf("NUmber of students: %d\n", ile_studentow(baza));
+        printf("Number of students: %d\n", ile_studentow(baza));
     }
-    else
-    {
-        exit(-1);
-    }
-    
+    //sortowanie malejaco i rosnaco
+    // if(strcmp("sortascending", argv[2]) == 0)
+    // {
+    //     sortuj_rosnaco();
+    // }
+    // if(strcmp("sortdescending", argv[2]) == 0)
+    // {
+    //     sortuj_malejaco();
+    // }
+
     zapisz_baze(argv[1], baza);
     zwolnij(baza);
     return 0;
